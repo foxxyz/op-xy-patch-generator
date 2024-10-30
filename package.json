@@ -1,0 +1,33 @@
+{
+  "name": "op-xy-patch-generator",
+  "version": "0.8.0",
+  "description": "OP-XY Patch Generator",
+  "main": "generate.js",
+  "type": "module",
+  "scripts": {
+    "lint": "eslint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/foxxyz/op-xy-patch-generator.git"
+  },
+  "keywords": [
+    "OP-XY",
+    "patch",
+    "automation"
+  ],
+  "author": "Ivo Janssen <foxxyz@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/foxxyz/op-xy-patch-generator/issues"
+  },
+  "homepage": "https://github.com/foxxyz/op-xy-patch-generator#readme",
+  "devDependencies": {
+    "@appliedminds/eslint-config": "^2.0.2",
+    "eslint": "^9.13.0"
+  },
+  "dependencies": {
+    "argparse": "^2.0.1",
+    "fresh-console": "^2.0.0"
+  }
+}

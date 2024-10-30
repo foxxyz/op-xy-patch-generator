@@ -1,0 +1,99 @@
+{
+    "engine":
+    {
+        "bendrange": 8191,
+        "highpass": 0,
+        "modulation":
+        {
+            "aftertouch":
+            {
+                "amount": 21953,
+                "target": 18022
+            },
+            "modwheel":
+            {
+                "amount": 32767,
+                "target": 0
+            },
+            "pitchbend":
+            {
+                "amount": 16710,
+                "target": 0
+            },
+            "velocity":
+            {
+                "amount": 16384,
+                "target": 0
+            }
+        },
+        "params":
+        [
+            16384,
+            16384,
+            16384,
+            16384,
+            16384,
+            16384,
+            16384,
+            16384
+        ],
+        "playmode": "mono",
+        "portamento.amount": 128,
+        "portamento.type": 32767,
+        "transpose": 0,
+        "tuning.root": 0,
+        "tuning.scale": 3045,
+        "velocity.sensitivity": 6879,
+        "volume": 24901,
+        "width": 0
+    },
+    "envelope":
+    {
+        "amp":
+        {
+            "attack": 0,
+            "decay": 0,
+            "release": 0,
+            "sustain": 32767
+        },
+        "filter":
+        {}
+    },
+    "fx":
+    {
+        "active": false,
+        "params":
+        [
+            0,
+            3276,
+            11120,
+            5632,
+            0,
+            32767,
+            0,
+            0
+        ],
+        "type": "svf"
+    },
+    "lfo":
+    {
+        "active": false,
+        "params":
+        [
+            23095,
+            16384,
+            15889,
+            16000,
+            0,
+            0,
+            0,
+            0
+        ],
+        "type": "tremolo"
+    },
+    "octave": -1,
+    "platform": "OP-XY",
+    "regions": [],
+    "type": "drum",
+    "version": 4
+}
