@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import { ArgumentParser, ArgumentDefaultsHelpFormatter, ArgumentTypeError, SUPPRESS } from 'argparse'
 import { lstatSync, readFileSync } from 'node:fs'
-import { readdir, readFile, writeFile } from 'node:fs/promises'
-import { join } from 'node:path'
+import { readdir, readFile, writeFile, cp, mkdir } from 'node:fs/promises'
+import { basename, dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import 'fresh-console'
 
@@ -52,11 +52,15 @@ try {
 // Set starting key
 let key = args.key_start
 
+// Use directory name as preset name
+const presetName = basename(args.directory).replace(/\.preset$/, '')
+const presetSamples = []
+
 // Read directory contents
 const files = await readdir(args.directory)
 for (const file of files) {
-    // Only add wav files
-    if (!file.match(/\.wav$/i)) continue
+    // Only add wav/aiff files
+    if (!file.match(/\.wav|\.aiff$/i)) continue
 
     // Determine framecount
     const buffer = await readFile(join(args.directory, file))
@@ -80,17 +84,41 @@ for (const file of files) {
         tune: 0
     })
     key++
+
+    presetSamples.push(file)
 }
 const totalProcessed = key - args.key_start
 if (!totalProcessed) {
-    console.error('No wav files were found! Is this the right directory?')
+    console.error('No wav or aiff files were found! Is this the right directory?')
     process.exit(1)
 }
 
-console.success(`${totalProcessed} files successfully processed.`)
+console.success(`${totalProcessed} files successfully processed. Creating preset...`)
 
-// Save to directory
-const destination = join(args.directory, 'patch.json')
-await writeFile(destination, JSON.stringify(patch))
+// Make new preset directory
+let i = 2
+let success = false
+const parent = dirname(args.directory)
+let presetPath = join(parent, `${presetName}.preset`)
+while (!success) {
+    try {
+        await mkdir(presetPath)
+        success = true
+    } catch (e) {
+        console.debug(`${presetPath} already exists. Trying again... (${e})`)
+        presetPath = join(parent, `${presetName}-${i++}.preset`)
+    }
+}
 
+// Save samples to preset directory
+const tasks = []
+for (const sample of presetSamples) {
+    tasks.push(cp(join(args.directory, sample), join(presetPath, sample)))
+}
+
+// Save patch to preset directory
+const destination = join(presetPath, 'patch.json')
+tasks.push(writeFile(destination, JSON.stringify(patch)))
+
+await Promise.all(tasks)
 console.success(`Patch file successfully written to ${destination}`)
