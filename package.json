@@ -8,7 +8,7 @@
     "lint": "eslint"
   },
   "bin": {
-    "generate-patch": "generate.js"
+    "generate-patch": "./generate.js"
   },
   "repository": {
     "type": "git",
