@@ -56,7 +56,7 @@ let key = args.key_start
 const files = await readdir(args.directory)
 for (const file of files) {
     // Only add wav files
-    if (!file.endsWith('.wav')) continue
+    if (!file.match(/\.wav$/i)) continue
 
     // Determine framecount
     const buffer = await readFile(join(args.directory, file))
@@ -81,7 +81,13 @@ for (const file of files) {
     })
     key++
 }
-console.success(`${key - args.key_start} files successfully processed.`)
+const totalProcessed = key - args.key_start
+if (!totalProcessed) {
+    console.error('No wav files were found! Is this the right directory?')
+    process.exit(1)
+}
+
+console.success(`${totalProcessed} files successfully processed.`)
 
 // Save to directory
 const destination = join(args.directory, 'patch.json')
