@@ -1,0 +1,30 @@
+{
+  "name": "op-xy-patch-generator-gui",
+  "version": "0.1.0",
+  "description": "GUI for creating OP-XY presets",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint src"
+  },
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "Ivo Janssen <foxxyz@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@appliedminds/eslint-config": "^2.0.2",
+    "eslint": "^9.17.0",
+    "eslint-plugin-vue": "^9.32.0",
+    "sass": "^1.83.0"
+  },
+  "dependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "fflate": "^0.8.2",
+    "vite": "^6.0.6",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
+  }
+}
