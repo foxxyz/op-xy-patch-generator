@@ -25,7 +25,7 @@ function directoryPath(path) {
 const parser = new ArgumentParser({ add_help: true, description: packageInfo.description, formatter_class: ArgumentDefaultsHelpFormatter })
 parser.add_argument('-v', '--version', { action: 'version', version: packageInfo.version })
 parser.add_argument('directory', { nargs: '?', help: 'Directory containing samples', type: directoryPath, default: SUPPRESS })
-parser.add_argument('--template', { help: 'JSON Template to use', default: join(__dirname, 'template.json') })
+parser.add_argument('--template', { help: 'JSON Template to use', default: join(__dirname, '..', 'template.json') })
 parser.add_argument('--key-start', { help: 'Starting key to use', default: 53, type: Number })
 const args = parser.parse_args()
 
