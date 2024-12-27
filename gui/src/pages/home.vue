@@ -3,13 +3,21 @@
         <div>
             <h1>OP-XY Preset Generator</h1>
             <div
-                :class="['dropzone', { active }]"
-                @drop.prevent="processFiles"
+                :class="['dropzone', { active, processing }]"
+                @drop.prevent="processDroppedFiles"
                 @dragover.prevent
                 @dragenter="highlight(true)"
                 @dragleave="highlight(false)"
+                @click="toggleFilePicker"
             >
-                <p>{{ active ? 'Drop it!' : 'Drop a folder of samples here or click to browse.' }}</p>
+                <p>{{ active ? 'Drop it!' : 'Drop a folder of samples here or click to browse' }}</p>
+                <input
+                    type="file"
+                    webkitdirectory
+                    multiple
+                    ref="fileInput"
+                    @change="processInputFiles"
+                >
             </div>
         </div>
     </main>
@@ -23,6 +31,7 @@ import { ref } from 'vue'
 const KEY_START = 53
 
 const active = ref(false)
+const processing = ref(false)
 
 async function compress(folder, files) {
     const archive = await new Promise((res, rej) => {
@@ -49,12 +58,22 @@ function offerDownload(blob, filename) {
     a.click()
 }
 
-async function scanFolder(item) {
+async function scanDroppedFolder(items) {
+    if (!items) throw new Error('No items found!')
+
+    // Get directory from dropped items
+    let directoryEntry
+    for (const item of items) {
+        directoryEntry = item.webkitGetAsEntry()
+        if (!directoryEntry.isDirectory) throw new Error('Not a directory!')
+        break
+    }
+
     const folder = {
-        name: item.name.replace(/\.preset$/, ''),
+        name: directoryEntry.name.replace(/\.preset$/, ''),
         files: []
     }
-    const reader = item.createReader()
+    const reader = directoryEntry.createReader()
     const entries = await new Promise((res, rej) => reader.readEntries(res, rej))
     for (const entry of entries) {
         // Only add wav/aiff files
@@ -65,6 +84,26 @@ async function scanFolder(item) {
 
         folder.files.push({
             name: entry.name,
+            buffer: new Uint8Array(await file.arrayBuffer())
+        })
+    }
+
+    if (!folder.files.length) throw new Error('No .wav or .aiff samples found in folder!')
+
+    return folder
+}
+
+async function scanInputFolder(files) {
+    const folder = {
+        name: 'custom',
+        files: []
+    }
+    for (const file of files) {
+        // Only add wav/aiff files
+        if (!file.name.match(/\.wav|\.aiff$/i)) continue
+
+        folder.files.push({
+            name: file.name,
             buffer: new Uint8Array(await file.arrayBuffer())
         })
     }
@@ -103,18 +142,9 @@ function createPatch(folder) {
     return patch
 }
 
-function extractFiles(items) {
-    if (!items) throw new Error('No items found!')
-    for (const item of items) {
-        const entry = item.webkitGetAsEntry()
-        if (!entry.isDirectory) throw new Error('Not a directory!')
-        return scanFolder(entry)
-    }
-}
-
-async function processFiles(ev) {
+async function createPreset(folder) {
+    processing.value = true
     try {
-        const folder = await extractFiles(ev.dataTransfer.items)
         const presetName = `${folder.name}.preset`
         const patch = await createPatch(folder)
         const archive = await compress(presetName, {
@@ -125,14 +155,37 @@ async function processFiles(ev) {
             }, {})
         })
         offerDownload(archive, `${presetName}.zip`)
+    } finally {
+        processing.value = false
+    }
+}
+
+async function processDroppedFiles(ev) {
+    active.value = false
+    try {
+        const folder = await scanDroppedFolder(ev.dataTransfer.items)
+        await createPreset(folder)
     } catch (e) {
         alert(e)
     }
-    active.value = false
+}
+
+async function processInputFiles(ev) {
+    try {
+        const folder = await scanInputFolder(ev.target.files)
+        await createPreset(folder)
+    } catch (e) {
+        alert(e)
+    }
 }
 
 function highlight(enabled) {
     active.value = enabled
+}
+
+const fileInput = ref()
+function toggleFilePicker() {
+    fileInput.value.click()
 }
 </script>
 
@@ -155,9 +208,11 @@ main
         font-size: .8em
         color: #888
         text-transform: lowercase
+        pointer-events: none
 
     .dropzone
         border: solid 1px transparent
+        border-radius: 1rem
         cursor: pointer
         display: flex
         justify-content: center
@@ -170,6 +225,9 @@ main
             animation-duration: .5s
             border-color: #ccc
             font-size: 3em
+
+        input
+            display: none
 
     @keyframes bgscroll
         from
