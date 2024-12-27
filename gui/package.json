@@ -1,6 +1,6 @@
 {
   "name": "op-xy-patch-generator-gui",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "GUI for creating OP-XY presets",
   "scripts": {
     "dev": "vite",
