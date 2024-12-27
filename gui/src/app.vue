@@ -40,6 +40,11 @@ input
     right: 0
     padding: .5em
     font-size: .7em
+    opacity: .5
+    transition: font-size .5s
+    font-weight: 100
+    &:hover
+        font-size: 33vw
 
 // Add font declarations here
 

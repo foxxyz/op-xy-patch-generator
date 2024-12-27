@@ -19,6 +19,9 @@
                     @change="processInputFiles"
                 >
             </div>
+            <footer>
+                Created by <a href="https://github.com/foxxyz">@foxxyz</a> | Not affiliated or endorsed by TE | <a href="https://github.com/foxxyz/op-xy-patch-generator">Source on Github</a>
+            </footer>
         </div>
     </main>
 </template>
@@ -195,6 +198,18 @@ main
     justify-content: center
     align-items: center
     height: 100%
+    padding: 2rem
+
+    a
+        color: inherit
+        &:hover
+            color: #999
+
+    footer
+        margin-top: 3rem
+        font-size: .7em
+        text-align: center
+        color: #555
 
     h1
         font-size: 5em
