@@ -2,6 +2,11 @@
     <main>
         <div>
             <h1>OP-XY Preset Generator</h1>
+            <transition name="fly-in">
+                <p class="status" v-if="status">
+                    {{ status }}
+                </p>
+            </transition>
             <div
                 :class="['dropzone', { active, processing }]"
                 @drop.prevent="processDroppedFiles"
@@ -35,6 +40,7 @@ const KEY_START = 53
 
 const active = ref(false)
 const processing = ref(false)
+const status = ref()
 
 async function compress(folder, files) {
     const archive = await new Promise((res, rej) => {
@@ -116,10 +122,13 @@ async function scanInputFolder(files) {
     return folder
 }
 
-function createPatch(folder) {
+function createPatch({ files }) {
+    // Sort files alphabetically
+    files = files.sort((a, b) => a.name.localeCompare(b.name))
+
     let key = KEY_START
     const patch = structuredClone(PATCH_TEMPLATE)
-    for (const { name, buffer } of folder.files) {
+    for (const { name, buffer } of files) {
         // Determine framecount
         // Subtracting 88 bytes for wrapper/headers
         const framecount = (buffer.byteLength - 88) / 2
@@ -142,6 +151,11 @@ function createPatch(folder) {
         })
         key++
     }
+
+    // Show status message
+    status.value = `${files.length} files successfully processed`
+    setTimeout(() => status.value = null, 8000)
+
     return patch
 }
 
@@ -199,6 +213,8 @@ main
     align-items: center
     height: 100%
     padding: 2rem
+    overflow: hidden
+    position: relative
 
     a
         color: inherit
@@ -244,9 +260,28 @@ main
         input
             display: none
 
+    .status
+        position: absolute
+        user-select: none
+        top: 3rem
+        left: 50%
+        font-weight: 100
+        transform: translate(-50%, 0)
+        border-radius: .5em
+        padding: 1em 2em
+        background: linear-gradient(to bottom, #141, #3c3)
+        color: white
+
     @keyframes bgscroll
         from
             background-position: 0 0
         to
             background-position: 0 200%
+
+    .fly-in-enter-active, .fly-in-leave-active
+        transition: 1s cubic-bezier(.37,1.32,.41,1)
+    .fly-in-enter-from
+        transform: translate(calc(-50% + 200vw), 0) scale(5, 1)
+    .fly-in-leave-to
+        transform: translate(calc(-50% - 200vw), 0) scale(5, 1)
 </style>
