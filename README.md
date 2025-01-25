@@ -3,6 +3,8 @@ OP-XY Patch Generator
 
 Automatically generate JSON patches from a directory of samples.
 
+Try it out: https://preset.operator-xy.com/
+
 _Note: This is an unofficial application and not endorsed by or affiliated with Teenage Engineering._
 
 Requirements
@@ -18,6 +20,10 @@ Installation
 
 Usage
 -----
+
+### Web
+
+Use it on the web at https://preset.operator-xy.com/!
 
 ### CLI
 
