@@ -1,6 +1,6 @@
 {
   "name": "op-xy-patch-generator",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "OP-XY Patch Generator",
   "main": "generate.js",
   "type": "module",
