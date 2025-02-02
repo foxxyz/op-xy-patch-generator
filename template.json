@@ -91,7 +91,7 @@
         ],
         "type": "tremolo"
     },
-    "octave": -1,
+    "octave": 0,
     "platform": "OP-XY",
     "regions": [],
     "type": "drum",
